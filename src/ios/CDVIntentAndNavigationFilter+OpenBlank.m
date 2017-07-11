@@ -56,9 +56,21 @@
                 allowNavigationsPass = NO;
             }
         }
-       default: {
-           break;
-       }
+        case UIWebViewNavigationTypeFormSubmitted:
+        {
+         
+        }
+        case UIWebViewNavigationTypeBackForward:
+        {
+         
+        }
+        case UIWebViewNavigationTypeReload:
+        {
+
+        }
+        default: {
+            break;
+        }
                 
     }
     
