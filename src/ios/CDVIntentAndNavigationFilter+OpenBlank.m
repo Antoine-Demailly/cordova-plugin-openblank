@@ -36,29 +36,20 @@
 
 - (BOOL)shouldOverrideLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType
 {
-    
     NSURL* url = [request URL];
-    BOOL allowNavigationsPass = YES;
+    NSString* indexPath = @"www/index.html";
+    NSString* bundlePath = [[NSBundle mainBundle] bundlePath];
     
-    switch (navigationType) {
-        case UIWebViewNavigationTypeLinkClicked:
-        {
-            [[UIApplication sharedApplication] openURL:url];
-            allowNavigationsPass = NO;
-        }
-        case UIWebViewNavigationTypeOther:
-        {
-            NSString *string1 = url.absoluteString;
-            NSRange range = [ string1 rangeOfString:@"http"];
-            if (range.location != NSNotFound) {
-                [[UIApplication sharedApplication] openURL:url];
-                allowNavigationsPass = NO;
-            }
-        }
-                
+    // Ignore initial load
+    if ([[url absoluteString] containsString:[bundlePath stringByAppendingPathComponent:indexPath]]) {
+        return YES;
+    }
+    else if ([request.URL isEqual:[request mainDocumentURL]]) {
+        [[UIApplication sharedApplication] openURL:url];
+        return NO;
     }
     
-    return allowNavigationsPass;
+    return YES;
 }
 
 @end
