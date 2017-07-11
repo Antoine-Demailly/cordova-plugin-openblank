@@ -56,6 +56,9 @@
                 allowNavigationsPass = NO;
             }
         }
+       default: {
+           break;
+       }
                 
     }
     
