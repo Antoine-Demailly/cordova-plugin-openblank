@@ -40,33 +40,32 @@
     NSURL* url = [request URL];
     BOOL allowNavigationsPass = YES;
     
+    NSString* indexPath = @"www/index.html";
+    NSString* bundlePath = [[NSBundle mainBundle] bundlePath];
+    
+    // Ignore initial load
+    if ([[url absoluteString] containsString:[bundlePath stringByAppendingPathComponent:indexPath]]) {
+        return YES;
+    }
+
     switch (navigationType) {
         case UIWebViewNavigationTypeLinkClicked:
         {
             [[UIApplication sharedApplication] openURL:url];
             allowNavigationsPass = NO;
+            break;
         }
         case UIWebViewNavigationTypeOther:
         {
-            NSString *string1 = url.absoluteString;
-            NSRange range = [ string1 rangeOfString:@"localhost"];
-            NSRange range2 = [ string1 rangeOfString:@"melty.fr"];
-            if (range.location == NSNotFound && range2.location == NSNotFound) {
+            NSString* documentURL = [[request mainDocumentURL] absoluteString];
+            
+            //if they are the same this is a javascript href click
+            if( [url.absoluteString isEqualToString:documentURL]) {
                 [[UIApplication sharedApplication] openURL:url];
-                allowNavigationsPass = NO;
+                return NO;
             }
-        }
-        case UIWebViewNavigationTypeFormSubmitted:
-        {
-         
-        }
-        case UIWebViewNavigationTypeBackForward:
-        {
-         
-        }
-        case UIWebViewNavigationTypeReload:
-        {
-
+            
+            break;
         }
         default: {
             break;
