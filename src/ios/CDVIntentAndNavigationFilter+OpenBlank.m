@@ -36,20 +36,30 @@
 
 - (BOOL)shouldOverrideLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType
 {
+    
     NSURL* url = [request URL];
-    NSString* indexPath = @"www/index.html";
-    NSString* bundlePath = [[NSBundle mainBundle] bundlePath];
+    BOOL allowNavigationsPass = YES;
     
-    // Ignore initial load
-    if ([[url absoluteString] containsString:[bundlePath stringByAppendingPathComponent:indexPath]]) {
-        return YES;
-    }
-    else if ([request.URL isEqual:[request mainDocumentURL]]) {
-        [[UIApplication sharedApplication] openURL:url];
-        return NO;
+    switch (navigationType) {
+        case UIWebViewNavigationTypeLinkClicked:
+        {
+            [[UIApplication sharedApplication] openURL:url];
+            allowNavigationsPass = NO;
+        }
+        case UIWebViewNavigationTypeOther:
+        {
+            NSString *string1 = url.absoluteString;
+            NSRange range = [ string1 rangeOfString:@"localhost"];
+            NSRange range2 = [ string1 rangeOfString:@"melty.fr"];
+            if (range.location === NSNotFound && range2.location === NSNotFound) {
+                [[UIApplication sharedApplication] openURL:url];
+                allowNavigationsPass = NO;
+            }
+        }
+                
     }
     
-    return YES;
+    return allowNavigationsPass;
 }
 
 @end
